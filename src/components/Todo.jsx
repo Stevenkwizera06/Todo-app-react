@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { MdDelete, MdAddCircle } from "react-icons/md";
+import { MdDelete, MdAddCircle, MdModeEdit } from "react-icons/md";
 
 const Todo = () => {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
+  const [editIndex, setEditIndex] = useState(-1);
 
-  console.log(newTodo);
   const handleNewTodoChange = (event) => {
     setNewTodo(event.target.value);
   };
@@ -13,7 +13,14 @@ const Todo = () => {
   const handleNewTodoAdd = (event) => {
     event.preventDefault();
     if (newTodo.trim() !== "") {
-      setTodos([...todos, { text: newTodo.trim(), completed: false }]);
+      if (editIndex !== -1) {
+        const newTodos = [...todos];
+        newTodos[editIndex].text = newTodo.trim();
+        setTodos(newTodos);
+        setEditIndex(-1);
+      } else {
+        setTodos([...todos, { text: newTodo.trim(), completed: false }]);
+      }
       setNewTodo("");
     }
   };
@@ -25,9 +32,18 @@ const Todo = () => {
   };
 
   const handleTodoDelete = (index) => {
-    const newTodos = [...todos];
-    newTodos.splice(index, 1);
-    setTodos(newTodos);
+    if (editIndex !== index) {
+      const newTodos = [...todos];
+      newTodos.splice(index, 1);
+      setTodos(newTodos);
+    } else {
+      setEditIndex(-1);
+    }
+  };
+
+  const handleTodoEdit = (index) => {
+    setEditIndex(index);
+    setNewTodo(todos[index].text);
   };
 
   return (
@@ -39,6 +55,7 @@ const Todo = () => {
         className="flex rounded-full justify-between shadow-box"
         onSubmit={handleNewTodoAdd}
       >
+        
         <input
           className="bg-white w-full px-4 py-5 rounded-full outline-none placeholder:text-base placeholder:text-black "
           type="text"
@@ -69,6 +86,12 @@ const Todo = () => {
               onClick={() => handleTodoDelete(index)}
             >
               <MdDelete className="text-red-500 bg-[#f2f3f5]  rounded-full p-[2px] h-6 w-6" />
+            </button>
+            <button
+              className=" float-right"
+              onClick={() => handleTodoEdit(index)}
+            >
+              <MdModeEdit className="text-green-500 bg-[#f2f3f5]  rounded-full p-[2px] h-6 w-6" />
             </button>
           </div>
         ))}
