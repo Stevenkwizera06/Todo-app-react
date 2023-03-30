@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { MdDelete, MdAddCircle, MdModeEdit } from "react-icons/md";
+import TodoList from "./TodoList";
+import TodoForm from "./TodoForm";
 
 const Todo = () => {
   const [todos, setTodos] = useState([]);
@@ -15,13 +16,14 @@ const Todo = () => {
     if (newTodo.trim() !== "") {
       if (editIndex !== -1) {
         const newTodos = [...todos];
-        newTodos[editIndex].text = newTodo.trim();
+        newTodos[editIndex].text = newTodo;
         setTodos(newTodos);
+        setNewTodo("");
         setEditIndex(-1);
       } else {
-        setTodos([...todos, { text: newTodo.trim(), completed: false }]);
+        setTodos([...todos, { text: newTodo, completed: false }]);
+        setNewTodo("");
       }
-      setNewTodo("");
     }
   };
 
@@ -32,70 +34,30 @@ const Todo = () => {
   };
 
   const handleTodoDelete = (index) => {
-    if (editIndex !== index) {
-      const newTodos = [...todos];
-      newTodos.splice(index, 1);
-      setTodos(newTodos);
-    } else {
-      setEditIndex(-1);
-    }
+    const newTodos = [...todos];
+    newTodos.splice(index, 1);
+    setTodos(newTodos);
   };
 
   const handleTodoEdit = (index) => {
-    setEditIndex(index);
     setNewTodo(todos[index].text);
+    setEditIndex(index);
   };
 
   return (
-    <div className="max-w-3xl mx-auto py-11 px-4">
-      <h1 className="text-[#ECECEC] my-9 text-9xl font-normal text-center">
-        todos
-      </h1>
-      <form
-        className="flex rounded-full justify-between shadow-box"
-        onSubmit={handleNewTodoAdd}
-      >
-        
-        <input
-          className="bg-white w-full px-4 py-5 rounded-full outline-none placeholder:text-base placeholder:text-black "
-          type="text"
-          value={newTodo}
-          onChange={handleNewTodoChange}
-          placeholder="Add todo..."
-        />
-        <button className="pr-5" type="submit">
-          <MdAddCircle className="text-[#61C7C6] w-7 h-10" />
-        </button>
-      </form>
-      <div>
-        {todos.map((todo, index) => (
-          <div key={index} className="pt-8 border-b-2">
-            <input
-              className="mr-2"
-              type="checkbox"
-              checked={todo.completed}
-              onChange={() => handleTodoComplete(index)}
-            />
-            <span
-              style={{ textDecoration: todo.completed ? "line-through" : "" }}
-            >
-              {todo.text}
-            </span>
-            <button
-              className=" float-right"
-              onClick={() => handleTodoDelete(index)}
-            >
-              <MdDelete className="text-red-500 bg-[#f2f3f5]  rounded-full p-[2px] h-6 w-6" />
-            </button>
-            <button
-              className=" float-right"
-              onClick={() => handleTodoEdit(index)}
-            >
-              <MdModeEdit className="text-green-500 bg-[#f2f3f5]  rounded-full p-[2px] h-6 w-6" />
-            </button>
-          </div>
-        ))}
-      </div>
+    <div className="container mx-auto max-w-xl pt-8">
+      <h1 className="text-4xl font-bold mb-8">Todo App</h1>
+      <TodoForm
+        newTodo={newTodo}
+        handleNewTodoChange={handleNewTodoChange}
+        handleNewTodoAdd={handleNewTodoAdd}
+      />
+      <TodoList
+        todos={todos}
+        handleTodoComplete={handleTodoComplete}
+        handleTodoDelete={handleTodoDelete}
+        handleTodoEdit={handleTodoEdit}
+      />
     </div>
   );
 };
