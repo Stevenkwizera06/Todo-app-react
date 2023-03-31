@@ -7,9 +7,9 @@ const Todo = () => {
   const [newTodo, setNewTodo] = useState("");
   const [editIndex, setEditIndex] = useState(-1);
 
-  const handleNewTodoChange = (event) => {
-    setNewTodo(event.target.value);
-  };
+  // const handleNewTodoChange = (event) => {
+  //   setNewTodo(event.target.value);
+  // };
 
   const handleNewTodoAdd = (event) => {
     event.preventDefault();
@@ -49,7 +49,7 @@ const Todo = () => {
       <h1 className="text-4xl font-bold mb-8">Todo App</h1>
       <TodoForm
         newTodo={newTodo}
-        handleNewTodoChange={handleNewTodoChange}
+        handleNewTodoChange={(event) => {setNewTodo(event.target.value)}}
         handleNewTodoAdd={handleNewTodoAdd}
       />
       <TodoList
